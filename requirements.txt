@@ -1,2 +1,4 @@
 polars
 yfinance
+streamlit
+plotly
