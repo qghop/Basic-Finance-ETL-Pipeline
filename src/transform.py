@@ -1,8 +1,8 @@
 import polars as pl
 import os
 
-def clean_raw_data(ticker):
-    df = pl.read_ipc(f"data/bronze/{ticker}_raw.feather")
+def clean_raw_data(ticker_str):
+    df = pl.read_ipc(f"data/bronze/{ticker_str}_raw.feather")
 
     df = df.with_columns([
         (pl.col("Close") - pl.col("Open")).alias("Price_Diff"),
@@ -12,7 +12,7 @@ def clean_raw_data(ticker):
     ]).drop_nulls()
 
     os.makedirs("data/silver", exist_ok=True)
-    df.write_ipc(f"data/silver/{ticker}_cleaned.feather")
+    df.write_ipc(f"data/silver/{ticker_str}_cleaned.feather")
 
 if __name__ == "__main__":
     clean_raw_data("AAPL")

@@ -3,8 +3,8 @@ import polars as pl
 from datetime import datetime
 import os
 
-def fetch_stock_data(ticker, start, end):
-    df = yf.download(ticker, start=start, end=end, auto_adjust=True, progress=False)
+def fetch_stock_data(ticker_str, start, end):
+    df = yf.download(ticker_str, start=start, end=end, auto_adjust=True, progress=False)
     if df is not None:
         df.reset_index(inplace=True)
         df.columns = [col[0] if isinstance(col, tuple) else col for col in df.columns]
@@ -12,15 +12,15 @@ def fetch_stock_data(ticker, start, end):
         print(pl_df.columns)
         return pl_df
     else:
-        raise ValueError(f"No data found for ticker: {ticker}")
+        raise ValueError(f"No data found for ticker: {ticker_str}")
 
-def save_raw_data(ticker, df):
+def save_raw_data(ticker_str, df):
     os.makedirs("data/bronze", exist_ok=True)
-    df.write_ipc(f"data/bronze/{ticker}_raw.feather")
+    df.write_ipc(f"data/bronze/{ticker_str}_raw.feather")
 
 if __name__ == "__main__":
-    ticker = "AAPL"
+    ticker_str = "AAPL"
     start = "2020-01-01"
     end = datetime.today().strftime('%Y-%m-%d')
-    df = fetch_stock_data(ticker, start, end)
-    save_raw_data(ticker, df)
+    df = fetch_stock_data(ticker_str, start, end)
+    save_raw_data(ticker_str, df)
